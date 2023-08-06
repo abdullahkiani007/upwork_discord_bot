@@ -19,12 +19,7 @@ def scrape_jobs():
     options.add_argument('--headless')
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36')
     options.add_argument('--headless')  # Run without opening a browser window
-    # Add the geckodriver directory to the system's PATH
-    geckodriver_path = './drivers'
-    os.environ['PATH'] += os.pathsep + geckodriver_path
-
-    # Now you can create the Firefox WebDriver without specifying executable_path
-    driver = webdriver.Firefox(options=options)
+    driver = webdriver.Firefox(executable_path='./drivers/geckodriver.exe', options=options)
 
     url = 'https://www.upwork.com/nx/jobs/search/?q=react&sort=recency&payment_verified=1'
     driver.get(url)
@@ -114,13 +109,7 @@ def init_selenium():
     options.add_argument('--headless')
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36')
     options.add_argument('--headless')  # Run without opening a browser window
-    # Add the geckodriver directory to the system's PATH
-    geckodriver_path = './drivers'
-    os.environ['PATH'] += os.pathsep + geckodriver_path
-
-    # Now you can create the Firefox WebDriver without specifying executable_path
-    driver = webdriver.Firefox(options=options)
-    
+    driver = webdriver.Firefox(executable_path='./drivers/geckodriver.exe', options=options)
     return driver
 
 # Function to perform Selenium actions (executed in a separate thread)
