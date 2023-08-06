@@ -74,7 +74,7 @@ intents = discord.Intents.default()  # Create a default intents object
 intents.typing = True
 intents.presences = True
 intents.guild_messages = True
-intents.message_content = True
+intents.messages = True
 
 bot = Bot(command_prefix='!', intents=intents)  # Pass intents to the Bot object
 
