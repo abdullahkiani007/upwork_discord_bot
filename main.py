@@ -8,9 +8,11 @@ import concurrent.futures
 import os
 from dotenv import load_dotenv
 
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 load_dotenv()
 prevUrl  = []
-
+geckodriver_path = './drivers'
+os.environ['PATH'] += os.pathsep + geckodriver_path
 
 
 def scrape_jobs():
@@ -19,7 +21,11 @@ def scrape_jobs():
     options.add_argument('--headless')
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36')
     options.add_argument('--headless')  # Run without opening a browser window
-    driver = webdriver.Firefox(executable_path='./drivers/geckodriver.exe', options=options)
+    
+
+    # Initialize Firefox WebDriver
+    driver = webdriver.Firefox( options=options)
+
 
     url = 'https://www.upwork.com/nx/jobs/search/?q=react&sort=recency&payment_verified=1'
     driver.get(url)
@@ -74,7 +80,7 @@ intents = discord.Intents.default()  # Create a default intents object
 intents.typing = True
 intents.presences = True
 intents.guild_messages = True
-intents.messages = True
+intents.message_content = True # intennts.message_content is not a valid attribute in production
 
 bot = Bot(command_prefix='!', intents=intents)  # Pass intents to the Bot object
 
@@ -105,21 +111,24 @@ client = discord.Client(intents=intents)
 
 # Initialize Selenium WebDriver (executed in a separate thread)
 def init_selenium():
+    print("initialising selenium \n")
     options = webdriver.FirefoxOptions()
     options.add_argument('--headless')
     options.add_argument('--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36')
     options.add_argument('--headless')  # Run without opening a browser window
-    driver = webdriver.Firefox(executable_path='./drivers/geckodriver.exe', options=options)
+    driver = webdriver.Firefox( options=options)#executable_path='./drivers/geckodriver.exe',
+    print("returning driver \n")
     return driver
 
 # Function to perform Selenium actions (executed in a separate thread)
 def perform_selenium_actions(driver):
-    
+    print("Fetching URL \n")
     url = 'https://www.upwork.com/nx/jobs/search/?q=react&sort=recency&payment_verified=1'
     driver.get(url)
     page_source = driver.page_source
     driver.quit()
     # Now you can use BeautifulSoup to parse page_source as before
+    print("parsing page \n")
     soup = BeautifulSoup(page_source, 'html.parser')
 
 
@@ -191,8 +200,8 @@ async def selenium(ctx):
 # Function to fetch and send job listings
 async def fetch_and_send_jobs(channel):
     while True:
-        await asyncio.sleep(300)  # Wait for an interval of 1 hour (adjust as needed)
-        
+        await asyncio.sleep(30)  # Wait for an interval of 1 hour (adjust as needed)
+        await channel.send("Hang tight fetching jobs")
         job = scrape_jobs()  # Call your scraping function
 
         # Send job listings to Discord
