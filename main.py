@@ -80,7 +80,7 @@ intents = discord.Intents.default()  # Create a default intents object
 intents.typing = True
 intents.presences = True
 intents.guild_messages = True
-intents.message_content = True # intennts.message_content is not a valid attribute in production
+intents.messages = True # intennts.message_content is not a valid attribute in production
 
 bot = Bot(command_prefix='!', intents=intents)  # Pass intents to the Bot object
 
